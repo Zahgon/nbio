@@ -5,10 +5,8 @@
 package logging
 
 import (
-	"fmt"
 	"io"
 	"os"
-	"time"
 )
 
 var (
@@ -49,19 +47,15 @@ type Logger interface {
 //
 //go:norace
 func SetLogger(l Logger) {
-	DefaultLogger = l
+	_ = "STUB: not implemented"
+
+	// SetLevel sets default logger's priority.
+	//
+	//go:norace
+	return
 }
 
-// SetLevel sets default logger's priority.
-//
-//go:norace
-func SetLevel(lvl int) {
-	if l, ok := DefaultLogger.(interface {
-		SetLevel(lvl int)
-	}); ok {
-		l.SetLevel(lvl)
-	}
-}
+func SetLevel(lvl int) { _ = "STUB: not implemented"; return }
 
 // logger implements Logger and is used in arpc by default.
 type logger struct {
@@ -71,83 +65,44 @@ type logger struct {
 // SetLevel sets logs priority.
 //
 //go:norace
-func (l *logger) SetLevel(lvl int) {
-	switch lvl {
-	case LevelAll, LevelDebug, LevelInfo, LevelWarn, LevelError, LevelNone:
-		l.level = lvl
-	default:
-		_, _ = fmt.Fprintf(Output, "invalid log level: %v", lvl)
-	}
-}
+func (l *logger) SetLevel(lvl int) { _ = "STUB: not implemented"; return }
 
 // Debug uses fmt.Printf to log a message at LevelDebug.
 //
 //go:norace
-func (l *logger) Debug(format string, v ...interface{}) {
-	if LevelDebug >= l.level {
-		_, _ = fmt.Fprintf(Output, time.Now().Format(TimeFormat)+" [DBG] "+format+"\n", v...)
-	}
-}
+func (l *logger) Debug(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Info uses fmt.Printf to log a message at LevelInfo.
 //
 //go:norace
-func (l *logger) Info(format string, v ...interface{}) {
-	if LevelInfo >= l.level {
-		_, _ = fmt.Fprintf(Output, time.Now().Format(TimeFormat)+" [INF] "+format+"\n", v...)
-	}
-}
+func (l *logger) Info(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Warn uses fmt.Printf to log a message at LevelWarn.
 //
 //go:norace
-func (l *logger) Warn(format string, v ...interface{}) {
-	if LevelWarn >= l.level {
-		_, _ = fmt.Fprintf(Output, time.Now().Format(TimeFormat)+" [WRN] "+format+"\n", v...)
-	}
-}
+func (l *logger) Warn(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Error uses fmt.Printf to log a message at LevelError.
 //
 //go:norace
-func (l *logger) Error(format string, v ...interface{}) {
-	if LevelError >= l.level {
-		_, _ = fmt.Fprintf(Output, time.Now().Format(TimeFormat)+" [ERR] "+format+"\n", v...)
-	}
-}
+func (l *logger) Error(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Debug uses DefaultLogger to log a message at LevelDebug.
 //
 //go:norace
-func Debug(format string, v ...interface{}) {
-	if DefaultLogger != nil {
-		DefaultLogger.Debug(format, v...)
-	}
-}
+func Debug(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Info uses DefaultLogger to log a message at LevelInfo.
 //
 //go:norace
-func Info(format string, v ...interface{}) {
-	if DefaultLogger != nil {
-		DefaultLogger.Info(format, v...)
-	}
-}
+func Info(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Warn uses DefaultLogger to log a message at LevelWarn.
 //
 //go:norace
-func Warn(format string, v ...interface{}) {
-	if DefaultLogger != nil {
-		DefaultLogger.Warn(format, v...)
-	}
-}
+func Warn(format string, v ...interface{}) { _ = "STUB: not implemented"; return }
 
 // Error uses DefaultLogger to log a message at LevelError.
 //
 //go:norace
-func Error(format string, v ...interface{}) {
-	if DefaultLogger != nil {
-		DefaultLogger.Error(format, v...)
-	}
-}
+func Error(format string, v ...interface{}) { _ = "STUB: not implemented"; return }

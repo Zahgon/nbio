@@ -6,7 +6,6 @@ package websocket
 
 import (
 	"errors"
-	"fmt"
 )
 
 var (
@@ -86,28 +85,14 @@ type CloseError struct {
 // Error .
 //
 //go:norace
-func (ce CloseError) Error() string {
-	return fmt.Sprintf("websocket: close code=%d and reason=%q", ce.Code, ce.Reason)
-}
+func (ce CloseError) Error() string { _ = "STUB: not implemented"; return "" }
 
 // CloseCode .
 //
 //go:norace
-func CloseCode(err error) int {
-	var ce CloseError
-	if errors.As(err, &ce) {
-		return ce.Code
-	}
-	return -1
-}
+func CloseCode(err error) int { _ = "STUB: not implemented"; return 0 }
 
 // CloseReason .
 //
 //go:norace
-func CloseReason(err error) string {
-	var ce CloseError
-	if errors.As(err, &ce) {
-		return ce.Reason
-	}
-	return ""
-}
+func CloseReason(err error) string { _ = "STUB: not implemented"; return "" }

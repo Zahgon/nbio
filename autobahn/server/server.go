@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/lesismal/llib/std/crypto/tls"
 	"github.com/lesismal/nbio/nbhttp"
@@ -15,51 +14,13 @@ import (
 )
 
 //go:norace
-func newUpgrader(isDataFrame bool) *websocket.Upgrader {
-	u := websocket.NewUpgrader()
-	u.EnableCompression(true)
-	if isDataFrame {
-		isFirst := true
-		u.OnDataFrame(func(c *websocket.Conn, messageType websocket.MessageType, fin bool, data []byte) {
-			err := c.WriteFrame(messageType, isFirst, fin, data)
-			if err != nil {
-				_ = c.Close()
-				return
-			}
-			if fin {
-				isFirst = true
-			} else {
-				isFirst = false
-			}
-		})
-	} else {
-		u.OnMessage(func(c *websocket.Conn, messageType websocket.MessageType, data []byte) {
-			_ = c.WriteMessage(messageType, data)
-		})
-	}
-
-	return u
-}
+func newUpgrader(isDataFrame bool) *websocket.Upgrader { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func onWebsocketFrame(w http.ResponseWriter, r *http.Request) {
-	upgrader := newUpgrader(true)
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		panic(err)
-	}
-	_ = conn.SetDeadline(time.Time{})
-}
+func onWebsocketFrame(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }
 
 //go:norace
-func onWebsocketMessage(w http.ResponseWriter, r *http.Request) {
-	upgrader := newUpgrader(false)
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		panic(err)
-	}
-	_ = conn.SetDeadline(time.Time{})
-}
+func onWebsocketMessage(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }
 
 //go:norace
 func main() {

@@ -6,12 +6,8 @@ package timer
 
 import (
 	"math"
-	"runtime"
 	"sync"
 	"time"
-	"unsafe"
-
-	"github.com/lesismal/nbio/logging"
 )
 
 const (
@@ -25,93 +21,52 @@ type Timer struct {
 }
 
 //go:norace
-func New(name string) *Timer {
-	return &Timer{name: name, asyncList: make([]func(), 8)[0:0]}
-}
+func New(name string) *Timer { _ = "STUB: not implemented"; return nil }
 
 // IsTimerRunning .
 //
 //go:norace
 func (t *Timer) IsTimerRunning() bool {
-	return true
+	_ = "STUB: not implemented"
+
+	// Start .
+	//
+	//go:norace
+	return false
 }
 
-// Start .
-//
-//go:norace
-func (t *Timer) Start() {}
+func (t *Timer) Start() {
+	_ = "STUB: not implemented"
 
-// Stop .
-//
-//go:norace
-func (t *Timer) Stop() {}
-
-// After used as time.After.
-//
-//go:norace
-func (t *Timer) After(d time.Duration) <-chan time.Time {
-	return time.After(d)
+	// Stop .
+	//
+	//go:norace
+	return
 }
+
+func (t *Timer) Stop() {
+	_ = "STUB: not implemented"
+
+	// After used as time.After.
+	//
+	//go:norace
+	return
+}
+
+func (t *Timer) After(d time.Duration) <-chan time.Time { _ = "STUB: not implemented"; return nil }
 
 // AfterFunc used as time.AfterFunc.
 //
 //go:norace
 func (t *Timer) AfterFunc(timeout time.Duration, f func()) *time.Timer {
-	return time.AfterFunc(timeout, func() {
-		defer func() {
-			err := recover()
-			if err != nil {
-				const size = 64 << 10
-				buf := make([]byte, size)
-				buf = buf[:runtime.Stack(buf, false)]
-				logging.Error("Timer[%v] exec call failed: %v\n%v\n", t.name, err, *(*string)(unsafe.Pointer(&buf)))
-			}
-		}()
-		f()
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Async executes f in another goroutine.
 //
 //go:norace
-func (t *Timer) Async(f func()) {
-	t.asyncMux.Lock()
-	isHead := (len(t.asyncList) == 0)
-	t.asyncList = append(t.asyncList, f)
-	t.asyncMux.Unlock()
-	if isHead {
-		go func() {
-			i := 0
-			for {
-				t.asyncMux.Lock()
-				if i == len(t.asyncList) {
-					if cap(t.asyncList) > 1024 {
-						t.asyncList = make([]func(), 0, 8)
-					} else {
-						t.asyncList = t.asyncList[0:0]
-					}
-					t.asyncMux.Unlock()
-					return
-				}
-				f := t.asyncList[i]
-				i++
-				t.asyncMux.Unlock()
-				func() {
-					defer func() {
-						err := recover()
-						if err != nil {
-							const size = 64 << 10
-							buf := make([]byte, size)
-							buf = buf[:runtime.Stack(buf, false)]
-							logging.Error("Timer[%v] async call failed: %v\n%v\n", t.name, err, *(*string)(unsafe.Pointer(&buf)))
-						}
-					}()
-					f()
-				}()
-			}
-		}()
-	}
-}
+func (t *Timer) Async(f func()) { _ = "STUB: not implemented"; return }
 
 // func (t *Timer) Async(f func()) {
 

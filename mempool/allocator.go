@@ -18,29 +18,19 @@ type DebugAllocator interface {
 }
 
 //go:norace
-func Malloc(size int) *[]byte {
-	return DefaultMemPool.Malloc(size)
-}
+func Malloc(size int) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func Realloc(pbuf *[]byte, size int) *[]byte {
-	return DefaultMemPool.Realloc(pbuf, size)
-}
+func Realloc(pbuf *[]byte, size int) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func Append(pbuf *[]byte, more ...byte) *[]byte {
-	return DefaultMemPool.Append(pbuf, more...)
-}
+func Append(pbuf *[]byte, more ...byte) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func AppendString(pbuf *[]byte, more string) *[]byte {
-	return DefaultMemPool.AppendString(pbuf, more)
-}
+func AppendString(pbuf *[]byte, more string) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func Free(pbuf *[]byte) {
-	DefaultMemPool.Free(pbuf)
-}
+func Free(pbuf *[]byte) { _ = "STUB: not implemented"; return }
 
 // func Init(bufSize, freeSize int) {
 // 	DefaultMemPool = New(bufSize, freeSize)

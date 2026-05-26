@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"html/template"
@@ -10,7 +9,6 @@ import (
 	"os"
 	"path"
 	"sort"
-	"strconv"
 	"strings"
 	"text/tabwriter"
 )
@@ -31,13 +29,10 @@ const (
 
 //go:norace
 func failing(behavior string) bool {
-	switch behavior {
+	_ = "STUB: not implemented"
+
 	// case statusUnclean, statusFailed, statusNonStrict: // we should probably fix the nonstrict as well at some point
-	case statusUnclean, statusFailed:
-		return true
-	default:
-		return false
-	}
+	return false
 }
 
 type statusCounter struct {
@@ -51,25 +46,7 @@ type statusCounter struct {
 }
 
 //go:norace
-func (c *statusCounter) Inc(s string) {
-	c.Total++
-	switch s {
-	case statusOK:
-		c.OK++
-	case statusInformational:
-		c.Informational++
-	case statusNonStrict:
-		c.NonStrict++
-	case statusUnimplemented:
-		c.Unimplemented++
-	case statusUnclean:
-		c.Unclean++
-	case statusFailed:
-		c.Failed++
-	default:
-		panic(fmt.Sprintf("unexpected status %q", s))
-	}
-}
+func (c *statusCounter) Inc(s string) { _ = "STUB: not implemented"; return }
 
 //go:norace
 func main() {
@@ -200,64 +177,21 @@ type entryReport struct {
 }
 
 //go:norace
-func decodeFile(path string, x interface{}) error {
-	f, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer func() { _ = f.Close() }()
-
-	d := json.NewDecoder(f)
-	return d.Decode(x)
-}
+func decodeFile(path string, x interface{}) error { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func compareBySegment(a, b string) int {
-	as := strings.Split(a, ".")
-	bs := strings.Split(b, ".")
-	for i := 0; i < min(len(as), len(bs)); i++ {
-		ax := mustInt(as[i])
-		bx := mustInt(bs[i])
-		if ax == bx {
-			continue
-		}
-		return int(ax - bx)
-	}
-	return len(b) - len(a)
-}
+func compareBySegment(a, b string) int { _ = "STUB: not implemented"; return 0 }
 
 //go:norace
-func mustInt(s string) int64 {
-	const bits = 32 << (^uint(0) >> 63)
-	x, err := strconv.ParseInt(s, 10, bits)
-	if err != nil {
-		panic(err)
-	}
-	return x
-}
+func mustInt(s string) int64 { _ = "STUB: not implemented"; return 0 }
 
 //go:norace
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
+func min(a, b int) int { _ = "STUB: not implemented"; return 0 }
 
 //go:norace
 func handlerIndex() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path
-		if path != "/" {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		if err := index.Execute(w, nil); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal(err)
-			return
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 var index = template.Must(template.New("").Parse(`
@@ -271,8 +205,4 @@ var index = template.Must(template.New("").Parse(`
 `))
 
 //go:norace
-func sortBySegment(s []string) {
-	sort.Slice(s, func(i, j int) bool {
-		return compareBySegment(s[i], s[j]) < 0
-	})
-}
+func sortBySegment(s []string) { _ = "STUB: not implemented"; return }

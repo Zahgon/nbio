@@ -5,12 +5,7 @@
 package nbio
 
 import (
-	"net"
-	"runtime"
 	"time"
-	"unsafe"
-
-	"github.com/lesismal/nbio/logging"
 )
 
 // ConnType is used to identify different types of Conn.
@@ -35,47 +30,39 @@ const (
 //
 //go:norace
 func (c *Conn) Type() ConnType {
-	return c.typ
+	_ = "STUB: not implemented"
+
+	// IsTCP returns whether this Conn is a TCP Conn.
+	//
+	//go:norace
+	return *new(ConnType)
 }
 
-// IsTCP returns whether this Conn is a TCP Conn.
-//
-//go:norace
-func (c *Conn) IsTCP() bool {
-	return c.typ == ConnTypeTCP
-}
+func (c *Conn) IsTCP() bool { _ = "STUB: not implemented"; return false }
 
 // IsUDP returns whether this Conn is a UDP Conn.
 //
 //go:norace
-func (c *Conn) IsUDP() bool {
-	switch c.typ {
-	case ConnTypeUDPServer, ConnTypeUDPClientFromDial, ConnTypeUDPClientFromRead:
-		return true
-	}
-	return false
-}
+func (c *Conn) IsUDP() bool { _ = "STUB: not implemented"; return false }
 
 // IsUnix  returns whether this Conn is a Unix Conn.
 //
 //go:norace
-func (c *Conn) IsUnix() bool {
-	return c.typ == ConnTypeUnix
-}
+func (c *Conn) IsUnix() bool { _ = "STUB: not implemented"; return false }
 
 // Session returns user session.
 //
 //go:norace
 func (c *Conn) Session() interface{} {
-	return c.session
+	_ = "STUB: not implemented"
+
+	// SetSession sets user session.
+	//
+	//go:norace
+	return nil
 }
 
-// SetSession sets user session.
-//
-//go:norace
-func (c *Conn) SetSession(session interface{}) {
-	c.session = session
-}
+func (c *Conn) SetSession(session interface{}) { _ = "STUB: not implemented"; return }
 
 // OnData registers Conn's data handler.
 // Notice:
@@ -95,68 +82,64 @@ func (c *Conn) SetSession(session interface{}) {
 //
 //go:norace
 func (c *Conn) OnData(h func(conn *Conn, data []byte)) {
-	c.dataHandler = h
+	_ = "STUB: not implemented"
+
+	// DataHandler returns Conn's data handler.
+	//
+	//go:norace
+	return
 }
 
-// DataHandler returns Conn's data handler.
-//
-//go:norace
-func (c *Conn) DataHandler() func(conn *Conn, data []byte) {
-	return c.dataHandler
-}
+func (c *Conn) DataHandler() func(conn *Conn, data []byte) { _ = "STUB: not implemented"; return nil }
 
 // Dial calls net.Dial to make a net.Conn and convert it to *nbio.Conn.
 //
 //go:norace
 func Dial(network string, address string) (*Conn, error) {
-	conn, err := net.Dial(network, address)
-	if err != nil {
-		return nil, err
-	}
-	return NBConn(conn)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Dial calls net.DialTimeout to make a net.Conn and convert it to *nbio.Conn.
 //
 //go:norace
 func DialTimeout(network string, address string, timeout time.Duration) (*Conn, error) {
-	conn, err := net.DialTimeout(network, address, timeout)
-	if err != nil {
-		return nil, err
-	}
-	return NBConn(conn)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Lock .
 //
 //go:norace
 func (c *Conn) Lock() {
-	c.mux.Lock()
+	_ = "STUB: not implemented"
+
+	// Unlock .
+	//
+	//go:norace
+	return
 }
 
-// Unlock .
-//
-//go:norace
 func (c *Conn) Unlock() {
-	c.mux.Unlock()
+	_ = "STUB: not implemented"
+
+	// IsClosed returns whether the Conn is closed.
+	//
+	//go:norace
+	return
 }
 
-// IsClosed returns whether the Conn is closed.
-//
-//go:norace
 func (c *Conn) IsClosed() (bool, error) {
-	return c.closed, c.closeErr
+	_ = "STUB: not implemented"
+	return false,
+
+		// ExecuteLen returns the length of the Conn's job list.
+		//
+		//go:norace
+		nil
 }
 
-// ExecuteLen returns the length of the Conn's job list.
-//
-//go:norace
-func (c *Conn) ExecuteLen() int {
-	c.mux.Lock()
-	n := len(c.jobList)
-	c.mux.Unlock()
-	return n
-}
+func (c *Conn) ExecuteLen() int { _ = "STUB: not implemented"; return 0 }
 
 // Execute is used to run the job.
 //
@@ -182,24 +165,10 @@ func (c *Conn) ExecuteLen() int {
 //     can customize it.
 //
 //go:norace
-func (c *Conn) Execute(job func()) bool {
-	c.mux.Lock()
-	if c.closed {
-		c.mux.Unlock()
-		return false
-	}
+func (c *Conn) Execute(job func()) bool { _ = "STUB: not implemented"; return false }
 
-	isHead := (len(c.jobList) == 0)
-	c.jobList = append(c.jobList, job)
-	c.mux.Unlock()
-
-	// If there's no job running, run Engine.Execute to run this job
-	// and new jobs appended before this head job is done.
-	if isHead {
-		c.execute(job)
-	}
-	return true
-}
+// If there's no job running, run Engine.Execute to run this job
+// and new jobs appended before this head job is done.
 
 // MustExecute implements a similar function as Execute did,
 // but will still execute or push the job to the
@@ -208,54 +177,18 @@ func (c *Conn) Execute(job func()) bool {
 // This is used to handle the close event in nbio/nbhttp.
 //
 //go:norace
-func (c *Conn) MustExecute(job func()) {
-	c.mux.Lock()
-	isHead := (len(c.jobList) == 0)
-	c.jobList = append(c.jobList, job)
-	c.mux.Unlock()
+func (c *Conn) MustExecute(job func()) { _ = "STUB: not implemented"; return }
 
-	// If there's no job running, run Engine.Execute to run this job
-	// and new jobs appended before this head job is done.
-	if isHead {
-		c.execute(job)
-	}
-}
+// If there's no job running, run Engine.Execute to run this job
+// and new jobs appended before this head job is done.
 
 //go:norace
-func (c *Conn) execute(job func()) {
-	c.p.g.Execute(func() {
-		i := 0
-		for {
-			func() {
-				defer func() {
-					if err := recover(); err != nil {
-						const size = 64 << 10
-						buf := make([]byte, size)
-						buf = buf[:runtime.Stack(buf, false)]
-						logging.Error("conn execute failed: %v\n%v\n",
-							err,
-							*(*string)(unsafe.Pointer(&buf)),
-						)
-					}
-				}()
-				job()
-			}()
+func (c *Conn) execute(job func()) { _ = "STUB: not implemented"; return }
 
-			c.mux.Lock()
-			i++
-			if len(c.jobList) == i {
-				// set nil to release the job and gc
-				c.jobList[i-1] = nil
-				// reuse the slice
-				c.jobList = c.jobList[0:0]
-				c.mux.Unlock()
-				return
-			}
-			// get next job
-			job = c.jobList[i]
-			// set nil to release the job and gc
-			c.jobList[i] = nil
-			c.mux.Unlock()
-		}
-	})
-}
+// set nil to release the job and gc
+
+// reuse the slice
+
+// get next job
+
+// set nil to release the job and gc

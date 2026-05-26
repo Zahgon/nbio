@@ -2,7 +2,6 @@ package mempool
 
 import (
 	"sync"
-	"unsafe"
 )
 
 var (
@@ -48,12 +47,7 @@ func init() {
 // NewAligned .
 //
 //go:norace
-func NewAligned() Allocator {
-	amp := &AlignedAllocator{
-		debugger: &debugger{},
-	}
-	return amp
-}
+func NewAligned() Allocator { _ = "STUB: not implemented"; return *new(Allocator) }
 
 // AlignedAllocator .
 type AlignedAllocator struct {
@@ -63,69 +57,33 @@ type AlignedAllocator struct {
 // Malloc .
 //
 //go:norace
-func (amp *AlignedAllocator) Malloc(size int) *[]byte {
-	if size < 0 {
-		return nil
-	}
-	var ret []byte
-	if size <= maxAlignedBufferSize {
-		idx := alignedIndexes[size]
-		ret = (*(alignedPools[idx].Get().(*[]byte)))[:size]
-	} else {
-		ret = make([]byte, size)
-	}
-	amp.incrMalloc(&ret)
-	return &ret
-}
+func (amp *AlignedAllocator) Malloc(size int) *[]byte { _ = "STUB: not implemented"; return nil }
 
 // Realloc .
 //
 //go:norace
 func (amp *AlignedAllocator) Realloc(pbuf *[]byte, size int) *[]byte {
-	if size <= cap(*pbuf) {
-		*pbuf = (*pbuf)[:size]
-		return pbuf
-	}
-	newBufPtr := amp.Malloc(size)
-	copy(*newBufPtr, *pbuf)
-	amp.Free(pbuf)
-	return newBufPtr
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Append .
 //
 //go:norace
 func (amp *AlignedAllocator) Append(pbuf *[]byte, more ...byte) *[]byte {
-	if cap(*pbuf)-len(*pbuf) >= len(more) {
-		*pbuf = append(*pbuf, more...)
-		return pbuf
-	}
-	newBufPtr := amp.Malloc(len(*pbuf) + len(more))
-	copy(*newBufPtr, *pbuf)
-	copy((*newBufPtr)[len(*pbuf):], more)
-	amp.Free(pbuf)
-	return newBufPtr
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AppendString .
 //
 //go:norace
 func (amp *AlignedAllocator) AppendString(pbuf *[]byte, s string) *[]byte {
-	x := (*[2]uintptr)(unsafe.Pointer(&s))
-	h := [3]uintptr{x[0], x[1], x[1]}
-	more := *(*[]byte)(unsafe.Pointer(&h))
-	return amp.Append(pbuf, more...)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Free .
 //
 //go:norace
-func (amp *AlignedAllocator) Free(pbuf *[]byte) {
-	size := cap(*pbuf)
-	if (size&minAlignedBufferSizeMask) != 0 || size > maxAlignedBufferSize {
-		return
-	}
-	amp.incrFree(pbuf)
-	idx := alignedIndexes[size]
-	alignedPools[idx].Put(pbuf)
-}
+func (amp *AlignedAllocator) Free(pbuf *[]byte) { _ = "STUB: not implemented"; return }

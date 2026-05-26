@@ -7,12 +7,9 @@ package nbio
 import (
 	"context"
 	"net"
-	"runtime"
 	"sync"
 	"time"
-	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
 	"github.com/lesismal/nbio/mempool"
 	"github.com/lesismal/nbio/taskpool"
 	"github.com/lesismal/nbio/timer"
@@ -114,9 +111,7 @@ type Config struct {
 type Gopher = Engine
 
 //go:norace
-func NewGopher(conf Config) *Gopher {
-	return NewEngine(conf)
-}
+func NewGopher(conf Config) *Gopher { _ = "STUB: not implemented"; return nil }
 
 // Engine is a manager of poller.
 type Engine struct {
@@ -175,225 +170,86 @@ type Engine struct {
 // SetETAsyncRead .
 //
 //go:norace
-func (e *Engine) SetETAsyncRead() {
-	if e.NPoller <= 0 {
-		e.NPoller = 1
-	}
-	e.EpollMod = EPOLLET
-	e.AsyncReadInPoller = true
-}
+func (e *Engine) SetETAsyncRead() { _ = "STUB: not implemented"; return }
 
 // SetLTSyncRead .
 //
 //go:norace
-func (e *Engine) SetLTSyncRead() {
-	if e.NPoller <= 0 {
-		e.NPoller = runtime.NumCPU()
-	}
-	e.EpollMod = EPOLLLT
-	e.AsyncReadInPoller = false
-}
+func (e *Engine) SetLTSyncRead() { _ = "STUB: not implemented"; return }
 
 // Stop closes listeners/pollers/conns/timer.
 //
 //go:norace
-func (g *Engine) Stop() {
-	for _, l := range g.listeners {
-		l.stop()
-	}
-
-	g.mux.Lock()
-	conns := g.connsStd
-	g.connsStd = map[*Conn]struct{}{}
-	connsUnix := g.connsUnix
-	g.mux.Unlock()
-
-	g.wgConn.Done()
-	for c := range conns {
-		if c != nil {
-			cc := c
-			g.Async(func() {
-				_ = cc.Close()
-			})
-		}
-	}
-	for _, c := range connsUnix {
-		if c != nil {
-			cc := c
-			g.Async(func() {
-				_ = cc.Close()
-			})
-		}
-	}
-
-	g.wgConn.Wait()
-
-	g.onStop()
-
-	g.Timer.Stop()
-
-	if g.ioTaskPool != nil {
-		g.ioTaskPool.Stop()
-	}
-
-	for i := 0; i < g.NPoller; i++ {
-		g.pollers[i].stop()
-	}
-
-	g.Wait()
-	logging.Info("NBIO[%v] stop", g.Name)
-}
+func (g *Engine) Stop() { _ = "STUB: not implemented"; return }
 
 // Shutdown stops Engine gracefully with context.
 //
 //go:norace
-func (g *Engine) Shutdown(ctx context.Context) error {
-	ch := make(chan struct{})
-	go func() {
-		g.Stop()
-		close(ch)
-	}()
-
-	select {
-	case <-ch:
-	case <-ctx.Done():
-		return ctx.Err()
-	}
-	return nil
-}
+func (g *Engine) Shutdown(ctx context.Context) error { _ = "STUB: not implemented"; return nil }
 
 // AddConn adds conn to a poller.
 //
 //go:norace
-func (g *Engine) AddConn(conn net.Conn) (*Conn, error) {
-	c, err := NBConn(conn)
-	if err != nil {
-		return nil, err
-	}
-
-	p := g.pollers[c.Hash()%len(g.pollers)]
-	err = p.addConn(c)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
-}
+func (g *Engine) AddConn(conn net.Conn) (*Conn, error) { _ = "STUB: not implemented"; return nil, nil }
 
 //go:norace
-func (g *Engine) addDialer(c *Conn) (*Conn, error) {
-	p := g.pollers[c.Hash()%len(g.pollers)]
-	err := p.addDialer(c)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
-}
+func (g *Engine) addDialer(c *Conn) (*Conn, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // OnAcceptError is called when accept error.
 //
 //go:norace
-func (g *Engine) OnAcceptError(h func(err error)) {
-	g.onAcceptError = h
-}
+func (g *Engine) OnAcceptError(h func(err error)) { _ = "STUB: not implemented"; return }
 
 // OnOpen registers callback for new connection.
 //
 //go:norace
-func (g *Engine) OnUDPListen(h func(c *Conn)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onUDPListen = h
-}
+func (g *Engine) OnUDPListen(h func(c *Conn)) { _ = "STUB: not implemented"; return }
 
 // OnOpen registers callback for new connection.
 //
 //go:norace
-func (g *Engine) OnOpen(h func(c *Conn)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onOpen = func(c *Conn) {
-		g.wgConn.Add(1)
-		h(c)
-	}
-}
+func (g *Engine) OnOpen(h func(c *Conn)) { _ = "STUB: not implemented"; return }
 
 // OnClose registers callback for disconnected.
 //
 //go:norace
-func (g *Engine) OnClose(h func(c *Conn, err error)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onClose = func(c *Conn, err error) {
-		g.Async(func() {
-			defer g.wgConn.Done()
-			h(c, err)
-		})
-	}
-}
+func (g *Engine) OnClose(h func(c *Conn, err error)) { _ = "STUB: not implemented"; return }
 
 // OnRead registers callback for reading event.
 //
 //go:norace
 func (g *Engine) OnRead(h func(c *Conn)) {
-	g.onRead = h
+	_ = "STUB: not implemented"
+
+	// OnData registers callback for data.
+	//
+	//go:norace
+	return
 }
 
-// OnData registers callback for data.
-//
-//go:norace
-func (g *Engine) OnData(h func(c *Conn, data []byte)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onDataPtr = func(c *Conn, pdata *[]byte) {
-		h(c, *pdata)
-	}
-}
+func (g *Engine) OnData(h func(c *Conn, data []byte)) { _ = "STUB: not implemented"; return }
 
 // OnDataPtr registers callback for data ptr.
 //
 //go:norace
-func (g *Engine) OnDataPtr(h func(c *Conn, pdata *[]byte)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onDataPtr = h
-}
+func (g *Engine) OnDataPtr(h func(c *Conn, pdata *[]byte)) { _ = "STUB: not implemented"; return }
 
 // OnWrittenSize registers callback for written size.
 // If len(b) is bigger than 0, it represents that it's writing a buffer,
 // else it's operating by Sendfile.
 //
 //go:norace
-func (g *Engine) OnWrittenSize(h func(c *Conn, b []byte, n int)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onWrittenSize = h
-}
+func (g *Engine) OnWrittenSize(h func(c *Conn, b []byte, n int)) { _ = "STUB: not implemented"; return }
 
 // OnReadBufferAlloc registers callback for memory allocating.
 //
 //go:norace
-func (g *Engine) OnReadBufferAlloc(h func(c *Conn) *[]byte) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onReadBufferAlloc = h
-}
+func (g *Engine) OnReadBufferAlloc(h func(c *Conn) *[]byte) { _ = "STUB: not implemented"; return }
 
 // OnReadBufferFree registers callback for memory release.
 //
 //go:norace
-func (g *Engine) OnReadBufferFree(h func(c *Conn, pbuf *[]byte)) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onReadBufferFree = h
-}
+func (g *Engine) OnReadBufferFree(h func(c *Conn, pbuf *[]byte)) { _ = "STUB: not implemented"; return }
 
 // Depracated .
 // OnWriteBufferRelease registers callback for write buffer memory release.
@@ -436,71 +292,36 @@ func (g *Engine) OnReadBufferFree(h func(c *Conn, pbuf *[]byte)) {
 // OnStop registers callback before Engine is stopped.
 //
 //go:norace
-func (g *Engine) OnStop(h func()) {
-	if h == nil {
-		panic("invalid handler: nil")
-	}
-	g.onStop = h
-}
+func (g *Engine) OnStop(h func()) { _ = "STUB: not implemented"; return }
 
 // PollerBuffer returns Poller's buffer by Conn, can be used on linux/bsd.
 //
 //go:norace
-func (g *Engine) PollerBuffer(c *Conn) []byte {
-	return c.p.ReadBuffer
-}
+func (g *Engine) PollerBuffer(c *Conn) []byte { _ = "STUB: not implemented"; return nil }
 
 // PollerBufferPtr returns Poller's buffer by Conn, can be used on linux/bsd.
 //
 //go:norace
-func (g *Engine) PollerBufferPtr(c *Conn) *[]byte {
-	return &c.p.ReadBuffer
-}
+func (g *Engine) PollerBufferPtr(c *Conn) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func (g *Engine) initHandlers() {
-	g.wgConn.Add(1)
-	g.OnOpen(func(c *Conn) {})
-	g.OnClose(func(c *Conn, err error) {})
-	// g.OnRead(func(c *Conn, b []byte) ([]byte, error) {
-	// 	n, err := c.Read(b)
-	// 	if n > 0 {
-	// 		return b[:n], err
-	// 	}
-	// 	return nil, err
-	// })
-	g.OnData(func(c *Conn, data []byte) {})
-	g.OnReadBufferAlloc(g.PollerBufferPtr)
-	g.OnReadBufferFree(func(c *Conn, pbuf *[]byte) {})
-	// g.OnWriteBufferRelease(func(c *Conn, buffer []byte) {})
-	// g.BeforeRead(func(c *Conn) {})
-	// g.AfterRead(func(c *Conn) {})
-	// g.BeforeWrite(func(c *Conn) {})
-	g.OnUDPListen(func(*Conn) {})
-	g.OnStop(func() {})
+func (g *Engine) initHandlers() { _ = "STUB: not implemented"; return }
 
-	if g.Execute == nil {
-		g.Execute = func(f func()) {
-			defer func() {
-				if err := recover(); err != nil {
-					const size = 64 << 10
-					buf := make([]byte, size)
-					buf = buf[:runtime.Stack(buf, false)]
-					logging.Error("execute failed: %v\n%v\n", err, *(*string)(unsafe.Pointer(&buf)))
-				}
-			}()
-			f()
-		}
-	}
-}
+// g.OnRead(func(c *Conn, b []byte) ([]byte, error) {
+// 	n, err := c.Read(b)
+// 	if n > 0 {
+// 		return b[:n], err
+// 	}
+// 	return nil, err
+// })
+
+// g.OnWriteBufferRelease(func(c *Conn, buffer []byte) {})
+// g.BeforeRead(func(c *Conn) {})
+// g.AfterRead(func(c *Conn) {})
+// g.BeforeWrite(func(c *Conn) {})
 
 //go:norace
-func (g *Engine) borrow(c *Conn) *[]byte {
-	return g.onReadBufferAlloc(c)
-}
+func (g *Engine) borrow(c *Conn) *[]byte { _ = "STUB: not implemented"; return nil }
 
 //go:norace
-func (g *Engine) payback(c *Conn, pbuf *[]byte) {
-	*pbuf = (*pbuf)[:cap(*pbuf)]
-	g.onReadBufferFree(c, pbuf)
-}
+func (g *Engine) payback(c *Conn, pbuf *[]byte) { _ = "STUB: not implemented"; return }

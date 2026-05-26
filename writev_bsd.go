@@ -7,22 +7,5 @@
 
 package nbio
 
-import (
-	"syscall"
-)
-
 //go:norace
-func writev(c *Conn, iovs [][]byte) (int, error) {
-	size := 0
-	for _, v := range iovs {
-		size += len(v)
-	}
-	pbuf := c.p.g.BodyAllocator.Malloc(size)
-	*pbuf = (*pbuf)[0:0]
-	for _, v := range iovs {
-		pbuf = c.p.g.BodyAllocator.Append(pbuf, v...)
-	}
-	n, err := syscall.Write(c.fd, *pbuf)
-	c.p.g.BodyAllocator.Free(pbuf)
-	return n, err
-}
+func writev(c *Conn, iovs [][]byte) (int, error) { _ = "STUB: not implemented"; return 0, nil }

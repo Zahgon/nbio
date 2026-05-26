@@ -4,8 +4,6 @@
 
 package nbhttp
 
-import "strings"
-
 var (
 	validMethods = map[string]bool{
 		"OPTIONS": true,
@@ -148,35 +146,23 @@ func init() {
 }
 
 //go:norace
-func isAlpha(c byte) bool {
-	return alphaCharMap[c]
-}
+func isAlpha(c byte) bool { _ = "STUB: not implemented"; return false }
 
 //go:norace
-func isNum(c byte) bool {
-	return numCharMap[c]
-}
+func isNum(c byte) bool { _ = "STUB: not implemented"; return false }
 
 //go:norace
-func isHex(c byte) bool {
-	return hexCharMap[c]
-}
+func isHex(c byte) bool { _ = "STUB: not implemented"; return false }
 
 // func isAlphaNum(c byte) bool {
 // 	return alphaNumCharMap[c]
 // }
 
 //go:norace
-func isToken(c byte) bool {
-	return tokenCharMap[c]
-}
+func isToken(c byte) bool { _ = "STUB: not implemented"; return false }
 
 //go:norace
-func isValidMethod(m string) bool {
-	return validMethods[strings.ToUpper(m)]
-}
+func isValidMethod(m string) bool { _ = "STUB: not implemented"; return false }
 
 //go:norace
-func isValidMethodChar(c byte) bool {
-	return validMethodCharMap[c]
-}
+func isValidMethodChar(c byte) bool { _ = "STUB: not implemented"; return false }
